@@ -1,0 +1,410 @@
+import os
+import re
+import pandas as pd
+
+# index_counter = 0 # for indexing the csv file, optional
+print_header = True #for pretty printing
+all_commented_words = []
+multiline_comments = 0
+unindented_comments = 0
+inline_comments = 0
+total_comments = 0
+united_declaration = False
+using_stl_libraries = False
+
+
+# lists the searched features
+def returnFeaureList():
+    feat_list = {
+            'Non-empty Lines': 0,
+            'Words': 0,
+            'Chars': 0,
+            'Ternary Operations': 0,
+            'Comments': 0,
+            'Comment Readability': 0,
+            'Multi-line to All Comments': 0,
+            'Inline to All Comments': 0,
+            'Unindented Comments': 0,
+            'Macros': 0,
+            '#INCLUDE': 0,
+            '#DEFINE': 0,
+            '#IFNDEF': 0,
+            '#IFDEF': 0,
+            'Using STL Libraries': False ,
+            'Literals': 0,
+            'Literal Name Readability': 0,
+            'Custom Types': 0,
+            'Custom Type Name Readability': 0,
+            'Object Definitions': 0,
+            'Object Declarations': 0,
+            'String Readability': 0,
+            'All Keywords': 0,
+            'IF Keywords': 0,
+            'ELSE Keywords': 0,
+            'FOR Keywords': 0,
+            'WHILE Keywords': 0,
+            'SWITCH Keywords': 0,
+            'DO Keywords': 0,
+            'Unique Words': 0,
+            'Functions': 0,
+            'Function Name Readability': 0,
+            'Nesting Depth': 0,
+            'Average Parameter Count': 0,
+            'Parameter Count Deviation': 0,
+            'Commands': 0,
+            'Average Commands per Line': 0,
+            'Commands per Line Deviation': 0,
+            'Empty Lines': 0,
+            'Tabulators': 0,
+            'Spaces': 0,
+            'Tab Indents': 0,
+            'Space Indents': 0,
+            'Prefers Tabs over Spaces': 0,
+            'Whitespace to Character Ratio': 0,
+            'Average Line Length': 0,
+            'Line Length Deviation': 0,
+            'Negation Operator': 0,
+            'Uses United Declarations': False,
+            'Author': ""
+        }
+    return feat_list
+
+
+# returns whether or not the line contains an stl library object
+def StlLibrariesInLine(line):
+    global using_stl_libraries
+    stl_headers = re.compile(r'(vector|deque|list|set|map|stack|queue|iterator|algorithm|numeric|functional|utility|memory)')
+    matches = stl_headers.search(line)
+    if (matches != None) and using_stl_libraries == False:
+        using_stl_libraries = True
+
+
+
+# counts the total characters in a file without whitespaces
+def charsInLine(line):
+    text = line.strip().split()
+    len_chars = sum(len(word) for word in text)
+    return len_chars
+
+
+# searches for keywords is a line
+def searchKeywordsInLine(line, regex):
+    found_keyword = re.search(regex, re.sub(r'".*"', '""', line), re.IGNORECASE)
+    if found_keyword:
+        return 1
+    else:
+        return 0
+
+
+# tests if a line is empty
+def isEmptyLine(line):
+    if line.strip() == '':
+        return 1
+    else:
+        return 0
+
+
+# tests if a line is not empty
+def isNotEmpty(line):
+    if line.strip() == '':
+        return 0
+    else:
+        return 1
+
+
+# returns 1 if the line contains negation operator, else 0
+def find_negation_operator(line):
+    found_operator=re.findall(r"""(?:(?:\b(?:while|if|for)\b).!|(=[\s\t]*!))""", line, re.X)
+    if found_operator:
+        #print(found_operator)
+        return 1
+    else:
+        return 0
+
+
+# counts tabs in a line
+def count_tabs(line):
+    return len(re.findall(r'\t', line))
+
+
+# counts words in a line
+def countWords(line):
+    return len(extract_words(line))
+
+
+#returns 0 if a ternary operator wasn't found, else the number of matches
+def ternary_operator(line):
+    found_operator = re.findall(r'(?:(?:=|==|<|>|<=|>=|!=)?[\s\t]*[\s\t]*[^?:]+[\s\t]*\?[\s\t]*(?:.*?:[^ ]*))', line)
+    if found_operator:
+        return len(found_operator)
+    else:
+        return 0
+
+
+# counts the readable words/all words ratio
+def count_readability(all_commented_words):
+    return check_readability(format_words(all_commented_words))
+
+
+# extracts repeating words and empty strings
+def format_words(words):
+    formatted = []
+    for word in words:
+        if word != '':
+            if type(word) == list:
+                for w in word:
+                    if w not in formatted:
+                        formatted += [w]
+            else:
+                if word not in formatted:
+                    formatted += [word]
+    return formatted
+
+
+# checks the words if they are in the dictionary
+def check_readability(words):
+    if not words:
+        return 0
+
+    readable = 0
+    words_from_dict = ""
+    with open('mywords.txt', 'r') as readable_words:
+        words_from_dict = readable_words.read()
+    for word in words:
+            is_readable = word in words_from_dict
+            if is_readable:
+                readable += 1
+
+    return readable / len(words)
+
+
+def find_macro(line):
+    found_macro = re.search(r'^#\s*(include|define|ifdef|ifndef)', line, re.IGNORECASE)
+    if found_macro:
+        return found_macro
+    else:
+        return False
+
+
+def extract_words(cLine):
+    return re.findall(r'([A-Z]?[a-z]+|[A-Z]+)', cLine)
+
+
+def analyzingComments(cLine):
+    commented_words = extract_words(cLine)
+
+    # comment at the beginning of the line
+    found_comment = re.findall(r'^[\s\t]*(//|/\*)[\s\t]*', cLine)
+    if found_comment:
+        global all_commented_words
+        all_commented_words += commented_words
+        global total_comments
+        total_comments += 1
+        global last_row_was_comment
+        global multiline_comments
+        global unindented_comments
+        global inline_comments
+        if last_row_was_comment == 1:
+            multiline_comments += 1
+        last_row_was_comment += 1
+        # inc if not end of multiline comment (if '*/' not found)
+        multiline_comments += int(not bool(re.findall(r'\*/', cLine))) #re.sub(r'".*"', '""', line))))
+        if cLine[0] == '/':
+            unindented_comments += 1
+    else:
+        last_row_was_comment = 0
+
+    # comment between code
+    found_comment = re.findall(r'(?:[};{])\s*(?://|/\*)(.*)(?:$|\*/)', cLine) # re.sub(r'".*"', '""', line))
+    if found_comment:
+        total_comments += 1
+        inline_comments += 1
+        last_row_was_comment = 1
+        all_commented_words += commented_words# re.sub(r'".*"', '""', line))
+
+
+# counts spaces in a line
+def spacesInLine(line):
+    return len(re.findall(r'(\b)? (\b)?', line))
+
+
+# tests whether or not a line contains united variable declarations
+def containsUnitedDeclaration(line):
+    global united_declaration
+    pattern = re.compile(r'.*\b [a-zA-Z_][a-zA-Z_0-9]*\s*[\[;,={]*[a-zA-Z0-9,\'"]*[\]\'}"]*\s*,\s*[a-zA-Z_][a-zA-Z_0-9]*.*;$')
+    if re.match(pattern, line) != None and (united_declaration == False):
+        united_declaration = True
+
+
+# returns the number of commands in a line
+def numberOfCommands(line):
+    return len(re.findall(r';', re.sub(r'".*"', '""', line)))
+
+# --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- #
+
+
+# writes extracted features into a .csv file
+def dump(data):
+    # global index_counter
+    # index_counter += 1
+    # for indexing the rows, optional...
+
+    index_counter = 1
+    global print_header
+    csv_file = "test_data" + ".csv"
+    csv_columns = [ 'Non-empty Lines', 'Words', 'Chars', 'Ternary Operations', 'Comments', 'Comment Readability', 'Multi-line to All Comments', 'Inline to All Comments', 'Unindented Comments', 'Macros', '#INCLUDE', '#DEFINE', '#IFNDEF', '#IFDEF', 'Using STL Libraries', 'Literals', 'Literal Name Readability', 'Custom Types', 'Custom Type Name Readability', 'Object Definitions', 'Object Declarations', 'String Readability', 'All Keywords', 'IF Keywords', 'ELSE Keywords', 'FOR Keywords', 'WHILE Keywords', 'SWITCH Keywords', 'DO Keywords', 'Unique Words', 'Functions', 'Function Name Readability', 'Nesting Depth', 'Average Parameter Count', 'Parameter Count Deviation', 'Commands', 'Average Commands per Line', 'Commands per Line Deviation', 'Empty Lines', 'Tabulators', 'Spaces', 'Tab Indents', 'Space Indents', 'Prefers Tabs over Spaces', 'Whitespace to Character Ratio', 'Average Line Length', 'Line Length Deviation', 'Negation Operator', 'Uses United Declarations', 'Author' ]
+    df=pd.DataFrame(data,index=[index_counter])
+    if print_header:
+        df.to_csv(csv_file, mode = 'w', header=csv_columns, index = False) #with headers
+        print_header = False
+    else:
+        df.to_csv(csv_file, mode = 'a', header = False, index = False) #append mode without headers
+
+
+def initializeGlobals():
+    global all_commented_words
+    global multiline_comments
+    global unindented_comments
+    global inline_comments
+    global total_comments
+    global united_declaration
+
+    all_commented_words = []
+    multiline_comments = 0
+    unindented_comments = 0
+    inline_comments = 0
+    total_comments = 0
+
+    united_declaration = False
+########################################################################################################################
+
+
+# getting the features from file
+def extract_features(filepath, author, csv_flag):
+    feature_list = returnFeaureList()
+    feature_list['Author'] = author
+
+    sum_line_length = 0
+    line_lengths = []
+    commands_per_non_empty_line = []
+
+    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+        line = f.readline()
+        line_count = 1
+        while line:
+
+            analyzingComments(line)
+            containsUnitedDeclaration(line)
+            StlLibrariesInLine(line)
+
+            charsCurrentLine = charsInLine(line)
+            sum_line_length += charsCurrentLine
+            line_lengths.append(len(line))
+
+            numberOfCommandsCurrentLine = numberOfCommands(line)
+            isNotEmptyLine = isNotEmpty(line)
+
+
+            feature_list['Chars'] += charsCurrentLine
+            feature_list['IF Keywords'] += searchKeywordsInLine(line, r'^.*\b(if)\b.*$')
+            feature_list['ELSE Keywords'] += searchKeywordsInLine(line, r'^.*\b(else)\b.*$')
+            feature_list['FOR Keywords'] += searchKeywordsInLine(line, r'^.*\b(for)\b.*$')
+            feature_list['WHILE Keywords'] += searchKeywordsInLine(line, r'^.*\b(while)\b.*$')
+            feature_list['SWITCH Keywords'] += searchKeywordsInLine(line, r'^.*\b(switch)\b.*$')
+            feature_list['DO Keywords'] += searchKeywordsInLine(line, r'^.*\b(do)\b.*$')
+            feature_list['Object Declarations'] += searchKeywordsInLine(line, r'^.*\b(class)\b.*$')
+            feature_list['Object Definitions'] += searchKeywordsInLine(line, r'^.*\b(new)\b.*$')
+            feature_list['Non-empty Lines'] += isNotEmptyLine
+            feature_list['Empty Lines'] += isEmptyLine(line)
+            feature_list['Negation Operator'] += find_negation_operator(line)
+            feature_list['Tabulators'] += count_tabs(line)
+            feature_list['Words'] += countWords(line)
+            feature_list['Ternary Operations'] += ternary_operator(line)
+            feature_list['Spaces'] += spacesInLine(line)
+            feature_list['Commands'] += numberOfCommandsCurrentLine
+
+            if(isNotEmptyLine):
+                commands_per_non_empty_line.append(numberOfCommandsCurrentLine)
+
+            # next line initialization
+            line = f.readline()
+            line_count += 1
+        """"""""""""""""""""" end of loop """""""""""""""""""""
+
+        # file features ...
+        feature_list['All Keywords'] = feature_list['IF Keywords'] + feature_list['ELSE Keywords'] + feature_list['FOR Keywords'] + feature_list['SWITCH Keywords'] + feature_list['WHILE Keywords'] + feature_list['DO Keywords']
+
+        if total_comments == 0:
+            # if there are no comments at all...
+            feature_list['Comment Readability'] = 0
+            feature_list['Inline to All Comments'] = 0
+            feature_list['Multi-line to All Comments'] = 0
+        else:
+            feature_list['Comment Readability'] = count_readability(all_commented_words)
+            feature_list['Inline to All Comments'] = inline_comments / total_comments
+            feature_list['Multi-line to All Comments'] = multiline_comments / total_comments
+
+        feature_list['Unindented Comments'] = unindented_comments
+        feature_list['Comments'] = total_comments
+        feature_list['Average Line Length'] = sum_line_length / line_count
+
+        # line_lengths can be 0 if the file is empty
+        if len(line_lengths) != 0:
+            feature_list['Line Length Deviation'] = sum([abs(i - feature_list['Average Line Length']) for i in line_lengths]) / len(line_lengths)
+        else:
+            feature_list['Line Length Deviation'] = 0
+
+        # character count can be 0 if the file is empty
+        if feature_list['Chars'] != 0:
+            feature_list['Whitespace to Character Ratio'] = (feature_list['Spaces'] + feature_list['Tabulators']) / feature_list['Chars']
+        else:
+            feature_list['Whitespace to Character Ratio'] = 0
+
+        # command count can be 0 if the file is empty
+        if feature_list['Commands'] == 0:
+            feature_list['Average Commands per Line'] = 0
+            feature_list['Commands per Line Deviation'] = 0
+        else:
+            feature_list['Average Commands per Line'] = feature_list['Commands'] / feature_list['Non-empty Lines']
+            feature_list['Commands per Line Deviation'] = sum([abs(i - feature_list['Average Commands per Line']) for i in commands_per_non_empty_line]) / feature_list['Non-empty Lines']
+
+        found_macro = find_macro(line)
+        if False != found_macro:
+            # noveljuk a talalt makrok szamat
+            feature_list['Macros'] += 1
+            # noveljuk az illeto kulcsszavak szamat (talalt makro alapjan)
+            feature_list[f"#{found_macro.group(1).upper()}"] += 1
+
+        feature_list['Uses United Declarations'] = united_declaration
+        feature_list['Using STL Libraries'] = using_stl_libraries
+
+    if csv_flag != "NO_CSV":
+        dump(feature_list)
+
+
+def start(path):
+    feature_list_final = {}
+    author = ""
+    pattern = re.compile(r'.+\\user[0-9]+$')
+    list_of_files = {}
+    for (dirpath, dirnames, filenames) in os.walk(path):
+        print(dirpath)
+        if(re.match(pattern, dirpath) != None):
+            # print(f"{dirpath}")
+            # print(dirpath.split('\\')[-1]) #last element in the array, aka the user
+            # new user
+
+            author = dirpath.split('\\')[-1]
+            list_of_files = {}
+            initializeGlobals()
+
+        for filename in filenames:
+            if filename.endswith('.cpp'):
+                list_of_files[filename] = os.sep.join([dirpath, filename])
+                # print(dirpath + '\\' + filename)
+                extract_features(dirpath + '\\' + filename, author, "YES_CSV")
+
+
+start("C:\\Users\\Nyaw\\Documents\\Jupyter\\Analyzer\\DataTest8")
+
+
