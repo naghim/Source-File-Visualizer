@@ -11,6 +11,13 @@ inline_comments = 0
 total_comments = 0
 united_declaration = False
 using_stl_libraries = False
+last_row_was_function = False
+current_function_row = 0
+braces = 0
+all_function_rows = []
+all_functions = []
+function_parameter_count = []
+uses_range_based_for = False
 
 
 # lists the searched features
@@ -65,6 +72,8 @@ def returnFeaureList():
             'Line Length Deviation': 0,
             'Negation Operator': 0,
             'Uses United Declarations': False,
+            'Uses Range-Based For': False,
+            'Function_Average_Length': 0,
             'Author': ""
         }
     return feat_list
@@ -232,13 +241,63 @@ def spacesInLine(line):
 def containsUnitedDeclaration(line):
     global united_declaration
     pattern = re.compile(r'.*\b [a-zA-Z_][a-zA-Z_0-9]*\s*[\[;,={]*[a-zA-Z0-9,\'"]*[\]\'}"]*\s*,\s*[a-zA-Z_][a-zA-Z_0-9]*.*;$')
-    if re.match(pattern, line) != None and (united_declaration == False):
+    if re.match(pattern, line) is not None and (united_declaration == False):
         united_declaration = True
 
 
 # returns the number of commands in a line
 def numberOfCommands(line):
     return len(re.findall(r';', re.sub(r'".*"', '""', line)))
+
+
+# searches functions in a line
+def find_functions(line):
+    found_functions=re.findall(r'(?:\w+(?:\[\d+\]|<\w+>)?[*&]?\s+)+(\w+)\s*\(\s*(?:(?:\w+(?:\[\d+\]|<\w+>)?[*&]?\s+)+(\w+))(?:\s*,\s*(?:\w+(?:\[\d+\]|<\w+>)?[*&]?\s+)+(\w+))*\s*\){?',line)
+    if found_functions:
+        global last_row_was_function
+        last_row_was_function = True
+
+        process_function_row(line)
+
+        # append the name of the functions to all functions
+        global all_functions
+        all_functions.append(found_functions[0][0])
+
+        # append the number of parameters of current function
+        global function_parameter_count
+        function_parameter_count.append(len(found_functions[0]) - 1)
+        return 1
+    else:
+        return 0
+
+
+# makes the necessary operations to follow functions, and their lengths
+def process_function_row(line):
+    global current_function_row
+    current_function_row += 1
+
+    # process curly braces to find the end of function
+    opening_braces = re.findall(r'{',line)
+    closing_braces=re.findall(r'}',line)
+    global braces
+    braces += (len(opening_braces)-len(closing_braces))
+
+    if braces == 0:
+        global last_row_was_function
+        last_row_was_function = False #end of function
+
+        # save the length of current function
+        global all_function_rows
+        all_function_rows.append(current_function_row)
+        current_function_row = 0
+
+
+# returns True if the line contains range-based for loop, else False
+def search_range_loop(line):
+    global uses_range_based_for
+    found_for=re.findall(r'(?:\s*for\s*\(.*:.*\))',line)
+    if found_for and uses_range_based_for == False:
+        uses_range_based_for = True
 
 # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- #
 
@@ -252,9 +311,9 @@ def dump(data):
     index_counter = 1
     global print_header
     csv_file = "test_data" + ".csv"
-    csv_columns = [ 'Non-empty Lines', 'Words', 'Chars', 'Ternary Operations', 'Comments', 'Comment Readability', 'Multi-line to All Comments', 'Inline to All Comments', 'Unindented Comments', 'Macros', '#INCLUDE', '#DEFINE', '#IFNDEF', '#IFDEF', 'Using STL Libraries', 'Literals', 'Literal Name Readability', 'Custom Types', 'Custom Type Name Readability', 'Object Definitions', 'Object Declarations', 'String Readability', 'All Keywords', 'IF Keywords', 'ELSE Keywords', 'FOR Keywords', 'WHILE Keywords', 'SWITCH Keywords', 'DO Keywords', 'Unique Words', 'Functions', 'Function Name Readability', 'Nesting Depth', 'Average Parameter Count', 'Parameter Count Deviation', 'Commands', 'Average Commands per Line', 'Commands per Line Deviation', 'Empty Lines', 'Tabulators', 'Spaces', 'Tab Indents', 'Space Indents', 'Prefers Tabs over Spaces', 'Whitespace to Character Ratio', 'Average Line Length', 'Line Length Deviation', 'Negation Operator', 'Uses United Declarations', 'Author' ]
     df=pd.DataFrame(data,index=[index_counter])
     if print_header:
+        csv_columns = [ 'non_empty_lines', 'words', 'chars', 'ternary_operations', 'comments', 'comment_readability', 'multi_line_to_all_comments', 'inline_to_all_comments', 'unindented_comments', 'macros', '#INCLUDE', '#DEFINE', '#IFNDEF', '#IFDEF', 'using_STL_libraries', 'literals', 'literal_name_readability', 'custom_types', 'custom_type_name_readability', 'object_definitions', 'object_declarations', 'string_readability', 'all_keywords', 'IF_keywords', 'ELSE_keywords', 'FOR_keywords', 'WHILE_keywords', 'SWITCH_keywords', 'DO_keywords', 'unique_words', 'functions', 'function_name_readability', 'nesting_depth', 'average_parameter_count', 'parameter_count_deviation', 'commands', 'average_commands_per_line', 'commands_per_line_deviation', 'empty_lines', 'tabulators', 'spaces', 'tab_indents', 'space_indents', 'prefers_tabs_over_spaces', 'whitespace_to_character_ratio', 'average_line_length', 'line_length_deviation', 'negation_operator', 'uses_united_declarations', 'uses_range_based_for', 'function_average_length', 'author' ]
         df.to_csv(csv_file, mode = 'w', header=csv_columns, index = False) #with headers
         print_header = False
     else:
@@ -268,14 +327,28 @@ def initializeGlobals():
     global inline_comments
     global total_comments
     global united_declaration
+    global uses_range_based_for
+    global last_row_was_function
+    global current_function_row
+    global braces
+    global all_function_rows
+    global all_functions
+    global function_parameter_count
 
     all_commented_words = []
     multiline_comments = 0
     unindented_comments = 0
     inline_comments = 0
     total_comments = 0
-
+    uses_range_based_for = False
     united_declaration = False
+    last_row_was_function = False
+    current_function_row = 0
+    braces = 0
+    all_function_rows = []
+    all_functions = []
+    function_parameter_count = []
+
 ########################################################################################################################
 
 
@@ -296,6 +369,7 @@ def extract_features(filepath, author, csv_flag):
             analyzingComments(line)
             containsUnitedDeclaration(line)
             StlLibrariesInLine(line)
+            search_range_loop(line)
 
             charsCurrentLine = charsInLine(line)
             sum_line_length += charsCurrentLine
@@ -303,7 +377,6 @@ def extract_features(filepath, author, csv_flag):
 
             numberOfCommandsCurrentLine = numberOfCommands(line)
             isNotEmptyLine = isNotEmpty(line)
-
 
             feature_list['Chars'] += charsCurrentLine
             feature_list['IF Keywords'] += searchKeywordsInLine(line, r'^.*\b(if)\b.*$')
@@ -322,9 +395,12 @@ def extract_features(filepath, author, csv_flag):
             feature_list['Ternary Operations'] += ternary_operator(line)
             feature_list['Spaces'] += spacesInLine(line)
             feature_list['Commands'] += numberOfCommandsCurrentLine
+            feature_list['Functions'] += find_functions(line)
 
             if(isNotEmptyLine):
                 commands_per_non_empty_line.append(numberOfCommandsCurrentLine)
+            if last_row_was_function:
+                process_function_row(line)
 
             # next line initialization
             line = f.readline()
@@ -377,6 +453,12 @@ def extract_features(filepath, author, csv_flag):
 
         feature_list['Uses United Declarations'] = united_declaration
         feature_list['Using STL Libraries'] = using_stl_libraries
+
+        feature_list['Average Parameter Count'] = sum(function_parameter_count) / len(function_parameter_count) if function_parameter_count != [] else 0
+        feature_list['Parameter Count Deviation'] = sum([abs(i - feature_list['Average Parameter Count']) for i in function_parameter_count]) / len(function_parameter_count) if function_parameter_count != [] else 0
+        feature_list['Function Name Readability'] = check_readability(format_words(all_functions))
+        feature_list['Function_Average_Length'] = sum(all_function_rows) / len(all_function_rows) if all_function_rows != [] else 0
+        feature_list['Uses Range-Based For'] = uses_range_based_for
 
     if csv_flag != "NO_CSV":
         dump(feature_list)
