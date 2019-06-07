@@ -1,4 +1,7 @@
+import datetime
+import json
 import os
+import platform
 import re
 import pandas as pd
 
@@ -9,42 +12,40 @@ multiline_comments = 0
 unindented_comments = 0
 inline_comments = 0
 total_comments = 0
-united_declaration = False
-using_stl_libraries = False
+united_declaration = 0
+using_stl_libraries = 0
 last_row_was_function = False
 current_function_row = 0
 braces = 0
 all_function_rows = []
 all_functions = []
 function_parameter_count = []
-uses_range_based_for = False
+uses_range_based_for = 0
 
 
 # lists the searched features
 def returnFeaureList():
     feat_list = {
+            'Empty Lines': 0,
             'Non-empty Lines': 0,
+            'Average Line Length': 0,
+            'Line Length Deviation': 0,
             'Words': 0,
+            'Unique Words': 0,
             'Chars': 0,
-            'Ternary Operations': 0,
+            'Tabulators': 0,
+            'Spaces': 0,
+            'Tab Indents': 0,
+            'Space Indents': 0,
+            'Prefers Tabs over Spaces': 0,
+            'Whitespace to Character Ratio': 0,
             'Comments': 0,
             'Comment Readability': 0,
             'Multi-line to All Comments': 0,
             'Inline to All Comments': 0,
             'Unindented Comments': 0,
-            'Macros': 0,
-            '#INCLUDE': 0,
-            '#DEFINE': 0,
-            '#IFNDEF': 0,
-            '#IFDEF': 0,
-            'Using STL Libraries': False ,
-            'Literals': 0,
-            'Literal Name Readability': 0,
-            'Custom Types': 0,
-            'Custom Type Name Readability': 0,
-            'Object Definitions': 0,
-            'Object Declarations': 0,
-            'String Readability': 0,
+            'Preprocessor Directives': 0,
+            'Using STL Libraries': 0 ,
             'All Keywords': 0,
             'IF Keywords': 0,
             'ELSE Keywords': 0,
@@ -52,28 +53,23 @@ def returnFeaureList():
             'WHILE Keywords': 0,
             'SWITCH Keywords': 0,
             'DO Keywords': 0,
-            'Unique Words': 0,
+            'Literals': 0,
+            'Literal Name Readability': 0,
+            'Custom Types': 0,
+            'Custom Type Name Readability': 0,
             'Functions': 0,
             'Function Name Readability': 0,
+            'Function_Average_Length': 0,
             'Nesting Depth': 0,
             'Average Parameter Count': 0,
             'Parameter Count Deviation': 0,
             'Commands': 0,
             'Average Commands per Line': 0,
-            'Commands per Line Deviation': 0,
-            'Empty Lines': 0,
-            'Tabulators': 0,
-            'Spaces': 0,
-            'Tab Indents': 0,
-            'Space Indents': 0,
-            'Prefers Tabs over Spaces': 0,
-            'Whitespace to Character Ratio': 0,
-            'Average Line Length': 0,
-            'Line Length Deviation': 0,
+            'Ternary Operations': 0,
             'Negation Operator': 0,
-            'Uses United Declarations': False,
-            'Uses Range-Based For': False,
-            'Function_Average_Length': 0,
+            'Uses United Declarations': 0,
+            'Uses Range-Based For': 0,
+            'Creation Order': 'not_specified',
             'Author': ""
         }
     return feat_list
@@ -84,8 +80,8 @@ def StlLibrariesInLine(line):
     global using_stl_libraries
     stl_headers = re.compile(r'(vector|deque|list|set|map|stack|queue|iterator|algorithm|numeric|functional|utility|memory)')
     matches = stl_headers.search(line)
-    if (matches != None) and using_stl_libraries == False:
-        using_stl_libraries = True
+    if (matches != None) and using_stl_libraries == 0:
+        using_stl_libraries = 1
 
 
 
@@ -141,7 +137,7 @@ def countWords(line):
     return len(extract_words(line))
 
 
-#returns 0 if a ternary operator wasn't found, else the number of matches
+# returns 0 if a ternary operator wasn't found, else the number of matches
 def ternary_operator(line):
     found_operator = re.findall(r'(?:(?:=|==|<|>|<=|>=|!=)?[\s\t]*[\s\t]*[^?:]+[\s\t]*\?[\s\t]*(?:.*?:[^ ]*))', line)
     if found_operator:
@@ -241,8 +237,8 @@ def spacesInLine(line):
 def containsUnitedDeclaration(line):
     global united_declaration
     pattern = re.compile(r'.*\b [a-zA-Z_][a-zA-Z_0-9]*\s*[\[;,={]*[a-zA-Z0-9,\'"]*[\]\'}"]*\s*,\s*[a-zA-Z_][a-zA-Z_0-9]*.*;$')
-    if re.match(pattern, line) is not None and (united_declaration == False):
-        united_declaration = True
+    if re.match(pattern, line) is not None and (united_declaration == 0):
+        united_declaration = 1
 
 
 # returns the number of commands in a line
@@ -296,8 +292,28 @@ def process_function_row(line):
 def search_range_loop(line):
     global uses_range_based_for
     found_for=re.findall(r'(?:\s*for\s*\(.*:.*\))',line)
-    if found_for and uses_range_based_for == False:
-        uses_range_based_for = True
+    if found_for and uses_range_based_for == 0:
+        uses_range_based_for = 1
+
+
+# returns the file's last modification time
+def creation_date(path_to_file):
+    t = os.path.getmtime(path_to_file)
+    return str(datetime.datetime.fromtimestamp(t))
+
+
+def check_space_indent(line):
+    if re.findall(r'^\s+', line):
+         return 1
+    else:
+         return 0
+
+
+def check_tab_indent(line):
+    if re.findall(r'^\t+', line):
+         return 1
+    else:
+         return 0
 
 # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- #
 
@@ -313,7 +329,7 @@ def dump(data):
     csv_file = "test_data" + ".csv"
     df=pd.DataFrame(data,index=[index_counter])
     if print_header:
-        csv_columns = [ 'non_empty_lines', 'words', 'chars', 'ternary_operations', 'comments', 'comment_readability', 'multi_line_to_all_comments', 'inline_to_all_comments', 'unindented_comments', 'macros', '#INCLUDE', '#DEFINE', '#IFNDEF', '#IFDEF', 'using_STL_libraries', 'literals', 'literal_name_readability', 'custom_types', 'custom_type_name_readability', 'object_definitions', 'object_declarations', 'string_readability', 'all_keywords', 'IF_keywords', 'ELSE_keywords', 'FOR_keywords', 'WHILE_keywords', 'SWITCH_keywords', 'DO_keywords', 'unique_words', 'functions', 'function_name_readability', 'nesting_depth', 'average_parameter_count', 'parameter_count_deviation', 'commands', 'average_commands_per_line', 'commands_per_line_deviation', 'empty_lines', 'tabulators', 'spaces', 'tab_indents', 'space_indents', 'prefers_tabs_over_spaces', 'whitespace_to_character_ratio', 'average_line_length', 'line_length_deviation', 'negation_operator', 'uses_united_declarations', 'uses_range_based_for', 'function_average_length', 'author' ]
+        csv_columns = ['empty_lines', 'non_empty_lines', 'average_line_length', 'line_length_deviation', 'words', 'unique_words', 'chars', 'tabulators', 'spaces', 'tab_indents', 'space_indents', 'prefers_tabs_over_spaces', 'whitespace_to_character_ratio', 'comments', 'comment_readability', 'multi_line_to_all_comments', 'inline_to_all_comments', 'unindented_comments', 'preprocessor_directives', 'using_stl_libraries', 'all_keywords', 'if_keywords', 'else_keywords', 'for_keywords', 'while_keywords', 'switch_keywords', 'do_keywords', 'literals', 'literal_name_readability', 'custom_types', 'custom_type_name_readability', 'functions', 'function_name_readability', 'function_average_length', 'nesting_depth', 'average_parameter_count', 'parameter_count_deviation', 'commands', 'average_commands_per_line', 'ternary_operations', 'negation_operator', 'uses_united_declarations', 'uses_range_based_for', 'creation_order', 'author' ]
         df.to_csv(csv_file, mode = 'w', header=csv_columns, index = False) #with headers
         print_header = False
     else:
@@ -340,8 +356,8 @@ def initializeGlobals():
     unindented_comments = 0
     inline_comments = 0
     total_comments = 0
-    uses_range_based_for = False
-    united_declaration = False
+    uses_range_based_for = 0
+    united_declaration = 0
     last_row_was_function = False
     current_function_row = 0
     braces = 0
@@ -353,13 +369,15 @@ def initializeGlobals():
 
 
 # getting the features from file
-def extract_features(filepath, author, csv_flag):
+def extract_features(filepath, author, creation_order, csv_flag):
     feature_list = returnFeaureList()
     feature_list['Author'] = author
+    feature_list['Creation Order'] = creation_order
 
     sum_line_length = 0
     line_lengths = []
     commands_per_non_empty_line = []
+    uses_macros = 0
 
     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
         line = f.readline()
@@ -385,10 +403,7 @@ def extract_features(filepath, author, csv_flag):
             feature_list['WHILE Keywords'] += searchKeywordsInLine(line, r'^.*\b(while)\b.*$')
             feature_list['SWITCH Keywords'] += searchKeywordsInLine(line, r'^.*\b(switch)\b.*$')
             feature_list['DO Keywords'] += searchKeywordsInLine(line, r'^.*\b(do)\b.*$')
-            feature_list['Object Declarations'] += searchKeywordsInLine(line, r'^.*\b(class)\b.*$')
-            feature_list['Object Definitions'] += searchKeywordsInLine(line, r'^.*\b(new)\b.*$')
             feature_list['Non-empty Lines'] += isNotEmptyLine
-            feature_list['Empty Lines'] += isEmptyLine(line)
             feature_list['Negation Operator'] += find_negation_operator(line)
             feature_list['Tabulators'] += count_tabs(line)
             feature_list['Words'] += countWords(line)
@@ -396,11 +411,17 @@ def extract_features(filepath, author, csv_flag):
             feature_list['Spaces'] += spacesInLine(line)
             feature_list['Commands'] += numberOfCommandsCurrentLine
             feature_list['Functions'] += find_functions(line)
+            feature_list['Tab Indents'] += check_tab_indent(line)
+            feature_list['Space Indents'] += check_space_indent(line)
 
-            if(isNotEmptyLine):
+            if isNotEmptyLine:
                 commands_per_non_empty_line.append(numberOfCommandsCurrentLine)
             if last_row_was_function:
                 process_function_row(line)
+
+            found_macro = find_macro(line)
+            if False != found_macro and uses_macros == 0:
+                uses_macros = 1
 
             # next line initialization
             line = f.readline()
@@ -418,11 +439,15 @@ def extract_features(filepath, author, csv_flag):
         else:
             feature_list['Comment Readability'] = count_readability(all_commented_words)
             feature_list['Inline to All Comments'] = inline_comments / total_comments
-            feature_list['Multi-line to All Comments'] = multiline_comments / total_comments
+            feature_list['Multi-line to All Comments'] = 1 - feature_list['Inline to All Comments']
 
         feature_list['Unindented Comments'] = unindented_comments
         feature_list['Comments'] = total_comments
         feature_list['Average Line Length'] = sum_line_length / line_count
+        if feature_list['Non-empty Lines'] != 0:
+            feature_list['Space Indents'] /= feature_list['Non-empty Lines']
+        else:
+            feature_list['Space Indents'] = 0
 
         # line_lengths can be 0 if the file is empty
         if len(line_lengths) != 0:
@@ -439,26 +464,20 @@ def extract_features(filepath, author, csv_flag):
         # command count can be 0 if the file is empty
         if feature_list['Commands'] == 0:
             feature_list['Average Commands per Line'] = 0
-            feature_list['Commands per Line Deviation'] = 0
         else:
             feature_list['Average Commands per Line'] = feature_list['Commands'] / feature_list['Non-empty Lines']
-            feature_list['Commands per Line Deviation'] = sum([abs(i - feature_list['Average Commands per Line']) for i in commands_per_non_empty_line]) / feature_list['Non-empty Lines']
 
-        found_macro = find_macro(line)
-        if False != found_macro:
-            # noveljuk a talalt makrok szamat
-            feature_list['Macros'] += 1
-            # noveljuk az illeto kulcsszavak szamat (talalt makro alapjan)
-            feature_list[f"#{found_macro.group(1).upper()}"] += 1
 
+        feature_list['Macros'] = uses_macros
         feature_list['Uses United Declarations'] = united_declaration
         feature_list['Using STL Libraries'] = using_stl_libraries
-
+        feature_list['Empty Lines'] = line_count - feature_list['Non-empty Lines']
         feature_list['Average Parameter Count'] = sum(function_parameter_count) / len(function_parameter_count) if function_parameter_count != [] else 0
         feature_list['Parameter Count Deviation'] = sum([abs(i - feature_list['Average Parameter Count']) for i in function_parameter_count]) / len(function_parameter_count) if function_parameter_count != [] else 0
         feature_list['Function Name Readability'] = check_readability(format_words(all_functions))
         feature_list['Function_Average_Length'] = sum(all_function_rows) / len(all_function_rows) if all_function_rows != [] else 0
         feature_list['Uses Range-Based For'] = uses_range_based_for
+        feature_list['Prefers Tabs over Spaces'] = 1 if feature_list['Tab Indents'] > feature_list['Space Indents'] else 0
 
     if csv_flag != "NO_CSV":
         dump(feature_list)
@@ -467,12 +486,13 @@ def extract_features(filepath, author, csv_flag):
 def start(path):
     feature_list_final = {}
     author = ""
-    pattern = re.compile(r'.+\\user[0-9]+$')
+    patternUser = re.compile(r'.+\\user[0-9]+$')
+    patternLab = re.compile(r'.+\\labor[0-9]+$')
     list_of_files = {}
     for (dirpath, dirnames, filenames) in os.walk(path):
         print(dirpath)
-        if(re.match(pattern, dirpath) != None):
-            # print(f"{dirpath}")
+        if(re.match(patternUser, dirpath) != None):
+            #print(f"{dirpath}")
             # print(dirpath.split('\\')[-1]) #last element in the array, aka the user
             # new user
 
@@ -480,13 +500,18 @@ def start(path):
             list_of_files = {}
             initializeGlobals()
 
+        if(re.match(patternLab, dirpath) != None):
+            creation_order = dirpath.split('\\')[-1].strip('labor')
+            #print (creation_order)
+
         for filename in filenames:
             if filename.endswith('.cpp'):
                 list_of_files[filename] = os.sep.join([dirpath, filename])
-                # print(dirpath + '\\' + filename)
-                extract_features(dirpath + '\\' + filename, author, "YES_CSV")
+                print(dirpath + '\\' + filename)
+                # extract_features(dirpath + '\\' + filename, author, creation_order, "YES_CSV")
 
 
-start("C:\\Users\\Nyaw\\Documents\\Jupyter\\Analyzer\\DataTest8")
+start("C:\\Users\\Nyaw\\Documents\\Jupyter\\Analyzer\\DataTest10")
+
 
 
