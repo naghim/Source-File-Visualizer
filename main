@@ -53,13 +53,11 @@ def returnFeaureList():
             'WHILE Keywords': 0,
             'SWITCH Keywords': 0,
             'DO Keywords': 0,
-            'Literals': 0,
-            'Literal Name Readability': 0,
             'Custom Types': 0,
             'Custom Type Name Readability': 0,
             'Functions': 0,
             'Function Name Readability': 0,
-            'Function_Average_Length': 0,
+            'Function Average Length': 0,
             'Nesting Depth': 0,
             'Average Parameter Count': 0,
             'Parameter Count Deviation': 0,
@@ -69,7 +67,7 @@ def returnFeaureList():
             'Negation Operator': 0,
             'Uses United Declarations': 0,
             'Uses Range-Based For': 0,
-            'Creation Order': 'not_specified',
+            'Creation Order': 0,
             'Author': ""
         }
     return feat_list
@@ -302,6 +300,7 @@ def creation_date(path_to_file):
     return str(datetime.datetime.fromtimestamp(t))
 
 
+# returns 1 is line is indented with space, otherwise returns 0
 def check_space_indent(line):
     if re.findall(r'^\s+', line):
          return 1
@@ -309,11 +308,22 @@ def check_space_indent(line):
          return 0
 
 
+# returns 1 is line is indented with tab, otherwise returns 0
 def check_tab_indent(line):
     if re.findall(r'^\t+', line):
          return 1
     else:
          return 0
+
+
+# calculates nesting depth
+def calculate_nesting_depth(line):
+    bracket_contents = re.findall(r'\((.*)\)|\[(.*)\]', line)
+
+    if not bracket_contents:
+        return 1
+
+    return 1 + max(calculate_nesting_depth(cont[0] + cont[1]) for cont in bracket_contents)
 
 # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- # --- #
 
@@ -329,7 +339,7 @@ def dump(data):
     csv_file = "test_data" + ".csv"
     df=pd.DataFrame(data,index=[index_counter])
     if print_header:
-        csv_columns = ['empty_lines', 'non_empty_lines', 'average_line_length', 'line_length_deviation', 'words', 'unique_words', 'chars', 'tabulators', 'spaces', 'tab_indents', 'space_indents', 'prefers_tabs_over_spaces', 'whitespace_to_character_ratio', 'comments', 'comment_readability', 'multi_line_to_all_comments', 'inline_to_all_comments', 'unindented_comments', 'preprocessor_directives', 'using_stl_libraries', 'all_keywords', 'if_keywords', 'else_keywords', 'for_keywords', 'while_keywords', 'switch_keywords', 'do_keywords', 'literals', 'literal_name_readability', 'custom_types', 'custom_type_name_readability', 'functions', 'function_name_readability', 'function_average_length', 'nesting_depth', 'average_parameter_count', 'parameter_count_deviation', 'commands', 'average_commands_per_line', 'ternary_operations', 'negation_operator', 'uses_united_declarations', 'uses_range_based_for', 'creation_order', 'author' ]
+        csv_columns = ['empty_lines', 'non_empty_lines', 'average_line_length', 'line_length_deviation', 'words', 'unique_words', 'chars', 'tabulators', 'spaces', 'tab_indents', 'space_indents', 'prefers_tabs_over_spaces', 'whitespace_to_character_ratio', 'comments', 'comment_readability', 'multi_line_to_all_comments', 'inline_to_all_comments', 'unindented_comments', 'preprocessor_directives', 'using_stl_libraries', 'all_keywords', 'if_keywords', 'else_keywords', 'for_keywords', 'while_keywords', 'switch_keywords', 'do_keywords', 'custom_types', 'custom_type_name_readability', 'functions', 'function_name_readability', 'function_average_length', 'nesting_depth', 'average_parameter_count', 'parameter_count_deviation', 'commands', 'average_commands_per_line', 'ternary_operations', 'negation_operator', 'uses_united_declarations', 'uses_range_based_for', 'creation_order', 'author' ]
         df.to_csv(csv_file, mode = 'w', header=csv_columns, index = False) #with headers
         print_header = False
     else:
@@ -418,6 +428,9 @@ def extract_features(filepath, author, creation_order, csv_flag):
                 commands_per_non_empty_line.append(numberOfCommandsCurrentLine)
             if last_row_was_function:
                 process_function_row(line)
+            max_nest_depth_in_line = calculate_nesting_depth(line)
+            if max_nest_depth_in_line > feature_list['Nesting Depth']:
+                    feature_list['Nesting Depth'] = max_nest_depth_in_line
 
             found_macro = find_macro(line)
             if False != found_macro and uses_macros == 0:
@@ -467,17 +480,17 @@ def extract_features(filepath, author, creation_order, csv_flag):
         else:
             feature_list['Average Commands per Line'] = feature_list['Commands'] / feature_list['Non-empty Lines']
 
-
-        feature_list['Macros'] = uses_macros
+        feature_list['Preprocessor Directives'] = uses_macros
         feature_list['Uses United Declarations'] = united_declaration
         feature_list['Using STL Libraries'] = using_stl_libraries
         feature_list['Empty Lines'] = line_count - feature_list['Non-empty Lines']
         feature_list['Average Parameter Count'] = sum(function_parameter_count) / len(function_parameter_count) if function_parameter_count != [] else 0
         feature_list['Parameter Count Deviation'] = sum([abs(i - feature_list['Average Parameter Count']) for i in function_parameter_count]) / len(function_parameter_count) if function_parameter_count != [] else 0
         feature_list['Function Name Readability'] = check_readability(format_words(all_functions))
-        feature_list['Function_Average_Length'] = sum(all_function_rows) / len(all_function_rows) if all_function_rows != [] else 0
+        feature_list['Function Average Length'] = sum(all_function_rows) / len(all_function_rows) if all_function_rows != [] else 0
         feature_list['Uses Range-Based For'] = uses_range_based_for
         feature_list['Prefers Tabs over Spaces'] = 1 if feature_list['Tab Indents'] > feature_list['Space Indents'] else 0
+        feature_list['Ternary Operations'] = 1 if feature_list['Ternary Operations'] > 0 else 0
 
     if csv_flag != "NO_CSV":
         dump(feature_list)
@@ -489,6 +502,7 @@ def start(path):
     patternUser = re.compile(r'.+\\user[0-9]+$')
     patternLab = re.compile(r'.+\\labor[0-9]+$')
     list_of_files = {}
+    creation_order = 0
     for (dirpath, dirnames, filenames) in os.walk(path):
         print(dirpath)
         if(re.match(patternUser, dirpath) != None):
@@ -502,13 +516,13 @@ def start(path):
 
         if(re.match(patternLab, dirpath) != None):
             creation_order = dirpath.split('\\')[-1].strip('labor')
-            #print (creation_order)
+            # print (creation_order)
 
         for filename in filenames:
             if filename.endswith('.cpp'):
                 list_of_files[filename] = os.sep.join([dirpath, filename])
                 print(dirpath + '\\' + filename)
-                # extract_features(dirpath + '\\' + filename, author, creation_order, "YES_CSV")
+                extract_features(dirpath + '\\' + filename, author, creation_order, "YES_CSV")
 
 
 start("C:\\Users\\Nyaw\\Documents\\Jupyter\\Analyzer\\DataTest10")

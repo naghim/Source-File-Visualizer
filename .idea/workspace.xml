@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/main" line="331" />
+    <bookmark url="file://$PROJECT_DIR$/main" line="341" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f404a802-81f7-4d49-82a9-a86ae79c54e8" name="Default Changelist" comment="" />
+    <list default="true" id="f404a802-81f7-4d49-82a9-a86ae79c54e8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main" beforeDir="false" afterPath="$PROJECT_DIR$/main" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +21,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="497" lean-forward="true" selection-start-line="497" selection-end-line="497" />
+            <state relative-caret-position="557">
+              <caret line="416" column="77" lean-forward="true" selection-start-line="416" selection-start-column="77" selection-end-line="416" selection-end-column="77" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -37,6 +42,10 @@
       <find>space in</find>
       <find>empty</find>
       <find>found_macro</find>
+      <find>average commands per line</find>
+      <find>parame</find>
+      <find>parameter</find>
+      <find>ternar</find>
     </findStrings>
     <replaceStrings>
       <replace>searchKeywordsInLine</replace>
@@ -45,6 +54,7 @@
   </component>
   <component name="Git.Settings">
     <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -64,26 +74,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="FirstPie" type="b2602c69:ProjectViewProjectNode" />
-              <item name="FirstPie" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FirstPie" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="Course" />
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="E:/Kutatás/Git/GitOriginal/bin/git.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RunDashboard">
@@ -131,13 +127,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2801252" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.2801252" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -158,9 +153,7 @@
     <entry file="file://$PROJECT_DIR$/test_data5" />
     <entry file="file://$PROJECT_DIR$/test_data6" />
     <entry file="file://$PROJECT_DIR$/Names.csv" />
-    <entry file="file://$PROJECT_DIR$/test_data.csv">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/test_data.csv" />
     <entry file="file://$USER_HOME$/.PyCharmEdu2018.3/system/python_stubs/-649524414/builtins.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-48984">
@@ -170,8 +163,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="497" lean-forward="true" selection-start-line="497" selection-end-line="497" />
+        <state relative-caret-position="557">
+          <caret line="416" column="77" lean-forward="true" selection-start-line="416" selection-start-column="77" selection-end-line="416" selection-end-column="77" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
