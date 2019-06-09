@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/main" line="341" />
+    <bookmark url="file://$PROJECT_DIR$/main" line="360" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f404a802-81f7-4d49-82a9-a86ae79c54e8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main" beforeDir="false" afterPath="$PROJECT_DIR$/main" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="557">
-              <caret line="416" column="77" lean-forward="true" selection-start-line="416" selection-start-column="77" selection-end-line="416" selection-end-column="77" />
+            <state relative-caret-position="115">
+              <caret line="75" column="25" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="25" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -46,10 +44,21 @@
       <find>parame</find>
       <find>parameter</find>
       <find>ternar</find>
+      <find>uni</find>
+      <find>words</find>
+      <find>extract</find>
+      <find>__contains__</find>
+      <find>if ls.</find>
+      <find>using</find>
+      <find>isEm</find>
+      <find>StlLibrariesInLine</find>
     </findStrings>
     <replaceStrings>
       <replace>searchKeywordsInLine</replace>
       <replace>feature_list</replace>
+      <replace>check_and_remove_list_item</replace>
+      <replace>ls =</replace>
+      <replace>stl_libraries_in_line</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -127,12 +136,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.2801252" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2801252" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -163,8 +173,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="557">
-          <caret line="416" column="77" lean-forward="true" selection-start-line="416" selection-start-column="77" selection-end-line="416" selection-end-column="77" />
+        <state relative-caret-position="115">
+          <caret line="75" column="25" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="25" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
