@@ -382,7 +382,7 @@ def camel_case_split(name):
 
 
 #splits by undescore and returns words in a list
-def underscore_split(name):
+def snake_case_split(name):
     without_underscore = re.sub(r'_',' ',name)
     words = without_underscore.split(' ') 
     return words
@@ -393,7 +393,7 @@ def name_create_list(names):
     splitted = []
     for string_name in names:
         if (re.search(r'_',string_name)):
-            splitted.extend(underscore_split(string_name))
+            splitted.extend(snake_case_split(string_name))
         else:
             splitted.extend(camel_case_split(string_name))
     return splitted     
@@ -720,7 +720,7 @@ def extract_features(filepath, author, creation_order, csv_flag):
         dump(feature_list)
 
 #for Windows
-'''
+
 def start(path):
     author = ""
     patternUser = re.compile(r'.+\\user[0-9]+$')
@@ -782,4 +782,4 @@ def start(path):
 
                 extract_features(dirpath + '/' + filename, author, creation_order, "YES_CSV")
     
-start("/home/tunde/Linux/Documents/Projekt/Sajat_kodok/Analyzer_06_10/DataTest2")
+start("/home/tunde/Linux/Documents/Projekt/Sajat_kodok/Analyzer_06_10/Data")'''
