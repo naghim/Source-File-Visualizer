@@ -259,10 +259,42 @@ def numberOfCommands(line):
     return len(re.findall(r';', re.sub(r'".*"', '""', line)))
 
 
+#checks brace placement at function definitions
+def check_first_function_row(line):
+    found_brace = re.findall(r'\)\s*\t*(?:\w+)?\s*\t*{',line)
+    if found_brace:
+        return True
+    else:
+        return False
+
+def check_second_function_row(line):
+    found_brace = re.findall(r'^{',line)
+    if found_brace:
+        return True
+    else:
+        return False
+
 # makes the necessary operations to follow functions, and their lengths
 def process_function_row(line):
     global current_function_row
     current_function_row += 1
+
+	#process brace placement
+    global kandr_function
+    global allman_function
+    global otherwise_function
+    global first_function_row_checked
+
+	#we are only intersted in the first and second row of a function to decide brace placement
+    if current_function_row == 1:
+        first_function_row_checked = check_first_function_row(line)
+        kandr_function += int(first_function_row_checked)
+
+    if current_function_row == 2 and not first_function_row_checked:
+        second_function_row_checked = check_second_function_row(line)
+        allman_function += int (second_function_row_checked)
+        otherwise_function += int (not (second_function_row_checked))
+    
 
     # process curly braces to find the end of function
     opening_braces = re.findall(r'{',line)
@@ -290,6 +322,7 @@ def find_functions(line):
 
         global last_row_was_function
         last_row_was_function = True
+
         process_function_row(line)
 
         # append the name of the functions to all functions
@@ -450,6 +483,16 @@ def file_to_list(filename):
         return l
 
 
+#decides which brace placemant was used most frequently
+def decide_function_style(kandr,allman,otherwise):
+   if kandr >allman and kandr>otherwise:
+        return 1
+   elif allman>kandr and allman>otherwise:
+        return 2
+   else:
+        return 3
+
+
 # adds words to a list
 def append_words(line):
     global words
@@ -510,6 +553,10 @@ def initializeGlobals():
     global function_parameter_count
     global words
     global using_stl_libraries
+    global kandr_function
+    global allman_function
+    global otherwise_function
+    global first_function_row_checked
 
     all_commented_words = []
     last_row_was_comment = 0
@@ -528,6 +575,10 @@ def initializeGlobals():
     function_parameter_count = []
     words = []
     using_stl_libraries = 0
+    kandr_function = 0
+    allman_function = 0
+    otherwise_function = 0
+    first_function_row_checked = False
 
 ########################################################################################################################
 
@@ -624,7 +675,7 @@ def extract_features(filepath, author, creation_order, csv_flag):
             feature_list['Multi-line to All Comments'] = multiline_comments / total_comments if multiline_comments > 0 else 0
             feature_list['Unindented Comments'] = unindented_comments / total_comments if unindented_comments > 0 else 0
 
-
+        
         feature_list['Comments'] = total_comments
         feature_list['Average Line Length'] = sum_line_length / line_count
         if feature_list['Non-empty Lines'] != 0:
@@ -669,7 +720,7 @@ def extract_features(filepath, author, creation_order, csv_flag):
         dump(feature_list)
 
 #for Windows
-
+'''
 def start(path):
     author = ""
     patternUser = re.compile(r'.+\\user[0-9]+$')
@@ -731,4 +782,4 @@ def start(path):
 
                 extract_features(dirpath + '/' + filename, author, creation_order, "YES_CSV")
     
-start("/home/tunde/Linux/Documents/Projekt/Sajat_kodok/Analyzer_06_10/Data") '''
+start("/home/tunde/Linux/Documents/Projekt/Sajat_kodok/Analyzer_06_10/DataTest2")
