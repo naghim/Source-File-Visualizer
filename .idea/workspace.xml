@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/main" line="360" />
-  </component>
   <component name="ChangeListManager">
     <list default="true" id="f404a802-81f7-4d49-82a9-a86ae79c54e8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main" beforeDir="false" afterPath="$PROJECT_DIR$/main" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mywords.txt" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="75" column="25" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="25" />
+            <state relative-caret-position="-9558">
+              <caret line="232" column="36" lean-forward="true" selection-start-line="232" selection-start-column="36" selection-end-line="232" selection-end-column="36" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -32,19 +31,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>tern</find>
-      <find>macros</find>
-      <find>obj</find>
-      <find>searchOperatorsInLine</find>
-      <find>feat_list</find>
-      <find>space in</find>
-      <find>empty</find>
-      <find>found_macro</find>
-      <find>average commands per line</find>
-      <find>parame</find>
-      <find>parameter</find>
-      <find>ternar</find>
-      <find>uni</find>
       <find>words</find>
       <find>extract</find>
       <find>__contains__</find>
@@ -52,6 +38,29 @@
       <find>using</find>
       <find>isEm</find>
       <find>StlLibrariesInLine</find>
+      <find>ter</find>
+      <find>terna</find>
+      <find>multi</find>
+      <find>isem</find>
+      <find>function</find>
+      <find>variable</find>
+      <find>decide_function_style</find>
+      <find>cust</find>
+      <find>define</find>
+      <find>file_to_list</find>
+      <find>onel</find>
+      <find>oneline</find>
+      <find>file</find>
+      <find>process_function_row</find>
+      <find>.txt</find>
+      <find>define_to_file</find>
+      <find>find_define_name</find>
+      <find>file_to</find>
+      <find>check_r</find>
+      <find>check_re</find>
+      <find>count_readability</find>
+      <find>analyzingComments</find>
+      <find>unin</find>
     </findStrings>
     <replaceStrings>
       <replace>searchKeywordsInLine</replace>
@@ -173,8 +182,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="75" column="25" selection-start-line="75" selection-start-column="4" selection-end-line="75" selection-end-column="25" />
+        <state relative-caret-position="-9558">
+          <caret line="232" column="36" lean-forward="true" selection-start-line="232" selection-start-column="36" selection-end-line="232" selection-end-column="36" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

@@ -20,6 +20,7 @@ all_functions = []
 function_parameter_count = []
 uses_range_based_for = 0
 words = []
+pathDir = 'C:\\Users\\Nyaw\\Documents\\SourceFileAnalyzer' # don't forget to point this to your source dir!
 
 
 # lists the searched features
@@ -40,6 +41,7 @@ def returnFeaureList():
             'Whitespace to Character Ratio': 0,
             'Comments': 0,
             'Comment Readability': 0,
+            'One Line to All Comments': 0,
             'Multi-line to All Comments': 0,
             'Inline to All Comments': 0,
             'Unindented Comments': 0,
@@ -147,6 +149,8 @@ def ternary_operator(line):
 
 # counts the readable words/all words ratio
 def count_readability(all_commented_words):
+    if all_commented_words == []:
+        return 0
     return check_readability(format_words(all_commented_words))
 
 
@@ -230,8 +234,11 @@ def analyzingComments(cLine):
             multiline_comments += 1
     else:
         #if last row was comment it continues at least up to this row
-        if last_row_was_comment ==1:
+        if last_row_was_comment == 1:
             multiline_comments += 1
+            total_comments += 1
+            all_commented_words += commented_words
+
         #if end of comment found
         if bool(re.findall(r'\*/', cLine)) :
             last_row_was_comment = 0
@@ -342,13 +349,14 @@ def find_functions(line):
         return 0
 
 
-#for checking readability: write function-,class-,define-,struct names into a file
+# for checking readability: write function-,class-,define-,struct names into a file
 def struct_to_file(words):
     with open('type.txt','a') as words_file:
         for i in words:
             with open('type.txt','r') as words_in_file:
                 if not (i in words_in_file.read()):
                     words_file.write('%s\n'%i)
+
 
 def class_to_file(words):
     with open('type.txt','a') as words_file:
@@ -357,6 +365,7 @@ def class_to_file(words):
                 if not (i in words_in_file.read()):
                     words_file.write('%s\n'%i)
 
+
 def define_to_file(words):
     with open('define.txt','a') as words_file:
         for i in words:
@@ -364,12 +373,14 @@ def define_to_file(words):
                 if not (i in words_in_file.read()):
                     words_file.write('%s\n'%i)
 
+
 def function_to_file(words):
     with open('function.txt','a') as words_file:
         for i in words:
             with open('function.txt','r') as words_in_file:
                 if not (i in words_in_file.read()):
                     words_file.write('%s\n'%i)
+
 
 def variable_to_file(words):
     with open('variable.txt','a') as words_file:
@@ -482,6 +493,9 @@ def calculate_nesting_depth(line):
 
 # read file into a list
 def file_to_list(filename):
+    global pathDir
+    if os.path.isfile(pathDir + '\\' + filename) == False:
+        return []
     with open(filename) as f:
         l = f.read().splitlines()
         return l
@@ -532,7 +546,7 @@ def dump(data):
     csv_file = "test_data" + ".csv"
     df=pd.DataFrame(data,index=[index_counter])
     if print_header:
-        csv_columns = ['empty_lines', 'non_empty_lines', 'average_line_length', 'line_length_deviation', 'words', 'unique_words', 'chars', 'tabulators', 'spaces', 'tab_indents', 'space_indents', 'prefers_tabs_over_spaces', 'whitespace_to_character_ratio', 'comments', 'comment_readability', 'multi_line_to_all_comments', 'inline_to_all_comments', 'unindented_comments_to_all', 'preprocessor_directives', 'define_name_readability', 'using_stl_libraries', 'all_keywords', 'if_keywords', 'else_keywords', 'for_keywords', 'while_keywords', 'switch_keywords', 'do_keywords', 'variable_name_readability', 'custom_types', 'custom_type_name_readability', 'functions', 'function_name_readability', 'function_average_length', 'function_length_deviation', 'function_block_braces', 'nesting_depth', 'average_parameter_count', 'parameter_count_deviation', 'commands', 'average_commands_per_line', 'ternary_operations', 'negation_operator', 'uses_united_declarations', 'uses_range_based_for', 'creation_order', 'author' ]
+        csv_columns = ['empty_lines', 'non_empty_lines', 'average_line_length', 'line_length_deviation', 'words', 'unique_words', 'chars', 'tabulators', 'spaces', 'tab_indents', 'space_indents', 'prefers_tabs_over_spaces', 'whitespace_to_character_ratio', 'comments', 'comment_readability', 'one_line_to_all_comments', 'multi_line_to_all_comments', 'inline_to_all_comments', 'unindented_comments_to_all', 'preprocessor_directives', 'define_name_readability', 'using_stl_libraries', 'all_keywords', 'if_keywords', 'else_keywords', 'for_keywords', 'while_keywords', 'switch_keywords', 'do_keywords', 'variable_name_readability', 'custom_types', 'custom_type_name_readability', 'functions', 'function_name_readability', 'function_average_length', 'function_length_deviation', 'function_block_braces', 'nesting_depth', 'average_parameter_count', 'parameter_count_deviation', 'commands', 'average_commands_per_line', 'ternary_operations', 'negation_operator', 'uses_united_declarations', 'uses_range_based_for', 'creation_order', 'author' ]
         df.to_csv(csv_file, mode = 'w', header=csv_columns, index = False) #with headers
         print_header = False
     else:
@@ -599,6 +613,7 @@ def extract_features(filepath, author, creation_order, csv_flag):
     commands_per_non_empty_line = []
     uses_macros = 0
     global words
+    global oneline_comments
 
     with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
         line = f.readline()
@@ -673,11 +688,13 @@ def extract_features(filepath, author, creation_order, csv_flag):
             feature_list['Inline to All Comments'] = 0
             feature_list['Multi-line to All Comments'] = 0
             feature_list['Unindented Comments'] = 0
+            feature_list['One Line to All Comments'] = 0
         else:
             feature_list['Comment Readability'] = count_readability(all_commented_words)
             feature_list['Inline to All Comments'] = inline_comments / total_comments if inline_comments > 0 else 0
             feature_list['Multi-line to All Comments'] = multiline_comments / total_comments if multiline_comments > 0 else 0
             feature_list['Unindented Comments'] = unindented_comments / total_comments if unindented_comments > 0 else 0
+            feature_list['One Line to All Comments'] = oneline_comments / total_comments
 
 
         feature_list['Comments'] = total_comments
