@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f404a802-81f7-4d49-82a9-a86ae79c54e8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main" beforeDir="false" afterPath="$PROJECT_DIR$/main" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mywords.txt" beforeDir="false" />
     </list>
@@ -18,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-9558">
-              <caret line="232" column="36" lean-forward="true" selection-start-line="232" selection-start-column="36" selection-end-line="232" selection-end-column="36" />
+            <state relative-caret-position="2645">
+              <caret line="747" column="80" selection-start-line="747" selection-start-column="80" selection-end-line="747" selection-end-column="80" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -31,11 +29,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>words</find>
-      <find>extract</find>
-      <find>__contains__</find>
-      <find>if ls.</find>
-      <find>using</find>
       <find>isEm</find>
       <find>StlLibrariesInLine</find>
       <find>ter</find>
@@ -52,7 +45,6 @@
       <find>oneline</find>
       <find>file</find>
       <find>process_function_row</find>
-      <find>.txt</find>
       <find>define_to_file</find>
       <find>find_define_name</find>
       <find>file_to</find>
@@ -61,6 +53,12 @@
       <find>count_readability</find>
       <find>analyzingComments</find>
       <find>unin</find>
+      <find>file_</find>
+      <find>line</find>
+      <find>name_create_list</find>
+      <find>struct_to_file</find>
+      <find>.txt</find>
+      <find>elif</find>
     </findStrings>
     <replaceStrings>
       <replace>searchKeywordsInLine</replace>
@@ -145,13 +143,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2801252" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.2801252" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -182,8 +179,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9558">
-          <caret line="232" column="36" lean-forward="true" selection-start-line="232" selection-start-column="36" selection-end-line="232" selection-end-column="36" />
+        <state relative-caret-position="2645">
+          <caret line="747" column="80" selection-start-line="747" selection-start-column="80" selection-end-line="747" selection-end-column="80" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>

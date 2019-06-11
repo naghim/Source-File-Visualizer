@@ -21,7 +21,7 @@ function_parameter_count = []
 uses_range_based_for = 0
 words = []
 pathDir = 'C:\\Users\\Nyaw\\Documents\\SourceFileAnalyzer' # don't forget to point this to your source dir!
-
+DIRSEPARATOR = '\\'
 
 # lists the searched features
 def returnFeaureList():
@@ -744,12 +744,17 @@ def extract_features(filepath, author, creation_order, csv_flag):
     if csv_flag  == "YES_CSV":
         dump(feature_list)
 
-#for Windows
 
-def start(path):
+# walks through directories and initiates feature extracktion for each .cpp file
+def start(path, make_csv):
+    global DIRSEPARATOR
     author = ""
-    patternUser = re.compile(r'.+\\user[0-9]+$')
-    patternLab = re.compile(r'.+\\labor[0-9]+$')
+    # patternUser = re.compile(r'.+\\user[0-9]+$')
+    patternUser = re.compile(r'.+Bence14\\[A-Za-z0-9]+$')
+    if DIRSEPARATOR == '\\':
+        patternLab = re.compile(r'.+\\labor[0-9]+$')
+    else:
+        patternLab = re.compile(r'.+/labor[0-9]+$')
     list_of_files = {}
     creation_order = 0
     for (dirpath, dirnames, filenames) in os.walk(path):
@@ -759,52 +764,34 @@ def start(path):
             # print(dirpath.split('\\')[-1]) #last element in the array, aka the user
             # new user
 
-            author = dirpath.split('\\')[-1]
+            author = dirpath.split(DIRSEPARATOR)[-1]
             list_of_files = {}
             # initializeGlobals()
 
         if(re.match(patternLab, dirpath) != None):
-            creation_order = dirpath.split('\\')[-1].strip('labor')
+            creation_order = dirpath.split(DIRSEPARATOR)[-1].strip('labor')
             # print (creation_order)
 
         for filename in filenames:
             if filename.endswith('.cpp'):
                 list_of_files[filename] = os.sep.join([dirpath, filename])
-                print(dirpath + '\\' + filename)
-                extract_features(dirpath + '\\' + filename, author, creation_order, "YES_CSV")
+                print(dirpath + DIRSEPARATOR + filename)
+                extract_features(dirpath + DIRSEPARATOR + filename, author, creation_order, make_csv)
 
 
-start("C:\\Users\\Nyaw\\Documents\\Jupyter\\Analyzer\\DataTest10")
+# main function to start feature extracking
+def main(path, opsys, make_csv):
+    global DIRSEPARATOR
+    DIRSEPARATOR = '\\' #defaults to Windows
+    if opsys == 'LINUX' or opsys == 'MACOS':
+        DIRSEPARATOR = '/'
+    start(path, make_csv)
 
-'''
-#for Linux
-def start(path):
-    author = ""
-    patternUser = re.compile(r'.+/user[0-9]+$')
-    patternLab = re.compile(r'.+/labor[0-9]+$')
-    list_of_files = {}
-    creation_order = 0
-    for (dirpath, dirnames, filenames) in os.walk(path):
-        print(dirpath)
-        if(re.match(patternUser, dirpath) != None):
-            #print(f"{dirpath}")
-            # print(dirpath.split('\\')[-1]) #last element in the array, aka the user
-            # new user
-
-            author = dirpath.split('/')[-1]
-            list_of_files = {}
-            # initializeGlobals()
-
-        if(re.match(patternLab, dirpath) != None):
-            creation_order = dirpath.split('/')[-1].strip('labor')
-            # print (creation_order)
+# -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # --
+#                                                        M A I N                                                      #
+# -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # -- # --
 
 
-        for filename in filenames:
-            if filename.endswith('.cpp'):
-                list_of_files[filename] = os.sep.join([dirpath, filename])
-                print(dirpath + '/' + filename)
+main("C:\\Users\\Nyaw\\Documents\\Jupyter\\Analyzer\\DataBence14", 'WINDOWS', 'YES_CSV')
+# main("/home/tunde/Linux/Documents/Projekt/Sajat_kodok/Analyzer_06_10/Data", 'LINUX', 'YES_CSV')
 
-                extract_features(dirpath + '/' + filename, author, creation_order, "YES_CSV")
-    
-start("/home/tunde/Linux/Documents/Projekt/Sajat_kodok/Analyzer_06_10/Data")'''
