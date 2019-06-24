@@ -750,7 +750,7 @@ def start(path, make_csv):
     global DIRSEPARATOR
     author = ""
     # patternUser = re.compile(r'.+\\user[0-9]+$')
-    patternUser = re.compile(r'.+Bence14\\[A-Za-z0-9]+$')
+    patternUser = re.compile(r'.+Bence14\\data\\[A-Za-z0-9]+$')
     if DIRSEPARATOR == '\\':
         patternLab = re.compile(r'.+\\labor[0-9]+$')
     else:
@@ -773,6 +773,9 @@ def start(path, make_csv):
             # print (creation_order)
 
         for filename in filenames:
+            if filename.startswith('.'):
+                # for the other data
+                continue;
             if filename.endswith('.cpp'):
                 list_of_files[filename] = os.sep.join([dirpath, filename])
                 print(dirpath + DIRSEPARATOR + filename)
