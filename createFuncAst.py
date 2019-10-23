@@ -14,12 +14,6 @@ def createAst(funcName,fileName,output):
 	command = "/home/tunde/Downloads/clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang-check -extra-arg=-std=c++1y -ast-dump -ast-dump-filter="+funcName+" "+ fileName + " -- >> " + output
 	print('Command:',command,'\n')
 	os.system(command)
-	#with open('temp.txt','r') as ast:
-	#	if 'error' not in ast.read():
-	#		command = "cat temp.txt >>"+ output
-	#		os.system(command)
-	#os.system("rm temp.txt")
-	
 
 #get filepath, first argument
 filepath = sys.argv[1]
