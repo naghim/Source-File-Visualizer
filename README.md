@@ -21,7 +21,7 @@ Source Code Authorship Attribution by extracting layout, lexical and syntactical
 ## Dataset
 Our dataset contains 9 C/C++ source file/100 user from the Google Code Jam 2015 programming competition [(GCJ_Dataset/Data)](https://github.com/kotunde/SourFileAnalyzer_featureSearch_and_classification/tree/master/GCJ_Dataset/Data), and an average 27 C++ source file/14 user from Sapientia EMTE University [(Sapi_Dataset/Data)](https://github.com/kotunde/SourFileAnalyzer_featureSearch_and_classification/tree/master/Sapi_Dataset/Data).
 
-The main difference between the datasets is that the GCJ users were only given the task to solve, while Sapi users were given the header files too to work with. So the results are more remarkable at the GCJ dataset, since the Sapi codes were similar in structure.
+The main difference between the datasets is that the GCJ users were only given the task to solve, while Sapi users were given the header files too to work with. So the results are more remarkable in the GCJ dataset, since the Sapi codes were similar in structure.
 
 ## How it works
 
@@ -38,7 +38,7 @@ The following link may help with it ( [Setting up Clang](https://eli.thegreenpla
 
 ### Running
 #### Layout and Lexical features
-Run the first script to extract layout and lexical features into a CSV file: [extractAttributes.py](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/LL_features/extractAttributes.py).
+Run this script to extract layout and lexical features into a CSV file: [extractAttributes.py](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/LL_features/extractAttributes.py).
 
 Don't forget to set the directory path.
 ```
@@ -47,7 +47,7 @@ $ python extractAttributes.py
 Now we have the layout and lexical feautres in LL_features.csv file, where each column is a feature, except the last, which is the "author", the class itself. Our results: [GCJ L&L Features CSV](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/GCJ_Dataset/CSV/GCJ_47.csv),  [Sapi L&L Features CSV](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Sapi_Dataset/CSV/SAPI_47.csv)
 
 #### Abstract Syntax Trees
-We have a bash script which is written for both of the datasets, since they differ in their directory structure ([gcj_data_ast_func.sh](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/AST_extraction/gcj_data_ast_func.sh) , [sapi_data_ast_func.sh](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/AST_extraction/sapi_data_ast_func.sh)). The script traverses the data directory (given as first parameter) by source files, and creates a second direcory (it's name given as second parameter) with the same directory structure, containing the .ast files with the same name as the respective source file.
+We have a bash script which is written for both of the datasets, since they differ in their directory structure ([gcj_data_ast_func.sh](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/AST_extraction/gcj_data_ast_func.sh) , [sapi_data_ast_func.sh](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/AST_extraction/sapi_data_ast_func.sh)). The script runs through the data directory (given as first parameter) by source files, and creates a second direcory (it's name given as second parameter) with the same directory structure, containing the .ast files with the same name as the respective source file.
 
 **Important!**
 In [createAstByFuncName.py](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/AST_extraction/createAstByFuncName.py) set the path to installed ```clang-check```
@@ -58,11 +58,11 @@ or
 ```
 $ bash sapi_data_ast_func.sh Data Data_ast
 ```
-The script creates the ASTs by first extracting the function names from each sourcefile, then creating the AST for each function.
+The script creates the ASTs by first extracting the function names from each source file, then creates the AST for each function.
 
 #### Classification
-Run Python script to classify the result CSVs with Random Forest Classifier([rfc.py](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/Classification/rfc.py)).
-Don't forget to set the directory path to the respective CSV file and format the output CSV's header.
+Run the [rfc.py](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification/blob/master/Programs/Classification/rfc.py) script to classify the result CSVs with Random Forest Classifier.
+Set the directory path to the respective CSV file and format the output CSV's header.
 ```
 $ python rfc.py
 ```
