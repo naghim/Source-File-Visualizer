@@ -9,6 +9,7 @@ the desired results mentioned above.
 
 #### Documentation (HU)
 Documentation [here](https://drive.google.com/file/d/1kWhOHgtBw9a86DTgF4EhhcINgtFxaYog/view?usp=sharing)
+Presentation [here](https://drive.google.com/file/d/1iHppZWdPPIsRhucvu9Lp6l9nL2WHNmr-/view?usp=sharing)
 
 ### Getting started
 Source Code Authorship Attribution by extracting layout, lexical and syntactical features and classifying them.
