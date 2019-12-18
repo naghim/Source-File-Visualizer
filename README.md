@@ -8,7 +8,7 @@ to focus on the semantical aspects of the source code, using abstract syntax tre
 the desired results mentioned above. 
 
 #### Documentation (HU)
-Documentation [here](https://docs.google.com/document/d/1KtrTesCy6hUlu6CyPVqRky7e0KrZFNm0G0gDqAPpukg/edit?usp=sharing)
+Documentation [here](https://drive.google.com/file/d/1kWhOHgtBw9a86DTgF4EhhcINgtFxaYog/view?usp=sharing)
 
 ### Getting started
 Source Code Authorship Attribution by extracting layout, lexical and syntactical features and classifying them.
