@@ -1,0 +1,22 @@
+﻿<Window x:Class="SourceFileVizualizer.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        ResizeMode="CanResize"
+        mc:Ignorable="d"
+        xmlns:controls="clr-namespace:SourceFileVizualizer.View.UserControls"
+        Title="Source File Visualizer" Height="450" Width="800">
+    <Grid>
+        <TabControl Grid.Row="0" SelectedIndex="{Binding TabControlSelectedIndex, Mode=TwoWay}">
+            <TabItem Header="Choose File">
+                <TabItem.Content>
+                    <controls:ChooseFileUserControl  DataContext="{Binding ChooseFileVM, Mode=OneWay}"/>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="Visualize">
+                  <controls:VizualizeUserControl DataContext="{Binding VizualizeVM, Mode=TwoWay}"/>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

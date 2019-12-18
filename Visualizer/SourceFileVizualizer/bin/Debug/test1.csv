@@ -1,0 +1,10 @@
+non_empty_lines,average_line_length,line_length_deviation,words,unique_words,chars,tabulators,spaces,tab_indents,space_indents,whitespace_to_character_ratio,comments,comment_readability,one_line_to_all_comments,multi_line_to_all_comments,inline_to_all_comments,using_stl_libraries,all_keywords,if_keywords,else_keywords,for_keywords,while_keywords,switch_keywords,do_keywords,functions,function_name_readability,function_average_length,function_length_deviation,function_block_braces,nesting_depth,average_parameter_count,parameter_count_deviation,commands,average_commands_per_line,ternary_operations,negation_operator,uses_united_declarations,uses_range_based_for,author
+1,9.25,10.56355932,114,35,555,0,496,0,0.913793103,0.893693694,0,0,0,0,0,1,9,2,2,4,1,0,0,0,0,0,0,3,3,0,0,38,0.655172414,0,0,1,0,ALONG
+1,10.075,17.25819328,297,34,1209,0,1801,0,0.991304348,1.489660877,2,0.8,1,0,0,0,46,16,5,24,1,0,0,0,0,0,0,3,4,0,0,96,0.834782609,0,0,1,0,ALONG
+1,8.567567568,10.26051051,70,28,317,0,258,0,0.911764706,0.813880126,0,0,0,0,0,1,4,1,1,0,2,0,0,0,0,0,0,3,2,0,0,22,0.647058824,0,0,1,0,ALONG
+1,9.979591837,10.76615646,100,28,489,0,393,0,0.914893617,0.803680982,0,0,0,0,0,0,12,3,2,6,1,0,0,0,0,0,0,3,4,0,0,35,0.744680851,0,0,1,0,ALONG
+1,8.384615385,9.649230769,53,23,218,0,158,0,0.833333333,0.724770642,0,0,0,0,0,0,4,1,0,2,1,0,0,0,0,0,0,3,3,0,0,18,0.75,0,0,1,0,ALONG
+1,11.25581395,14.11108071,208,40,968,0,963,0,0.951219512,0.994834711,0,0,0,0,0,0,19,6,2,10,1,0,0,0,0,0,0,3,4,0,0,57,0.695121951,0,0,1,0,ALONG
+1,9.323529412,17.95544554,205,27,951,0,1610,0,0.928571429,1.692954784,0,0,0,0,0,1,58,31,26,0,1,0,0,0,0,0,0,3,2,0,0,40,0.408163265,0,0,1,0,ALONG
+1,11.77380952,10.3429432,191,47,989,0,441,0,0.759493671,0.445904954,0,0,0,0,0,1,11,4,0,6,1,0,0,2,0.5,18,2,2,4,1.5,0.5,56,0.708860759,0,0,1,0,ALONG
+1,10.42857143,9.831932773,69,31,365,0,197,0,0.75,0.539726027,0,0,0,0,0,1,4,1,1,0,2,0,0,0,0,0,0,3,3,0,0,17,0.53125,0,0,1,0,ALONG
