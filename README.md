@@ -1,4 +1,4 @@
-# SourceFileAnalyzer
+# SourceFileAnalyzer - visualizer
 ### About
 Nowadays more and more people are seeking to apply, develop and add to their skills the computer science field. 
 Consequently, a need has risen to write clean, efficient, well documented and readable code. The purpose of this research is
@@ -6,6 +6,8 @@ to measure programming style from source code. By doing so, it not only may be a
 by their competence, but also could be a great tool for students hoping to improve their abilities. This research is intended 
 to focus on the semantical aspects of the source code, using abstract syntax trees and deep learning in order to achieve 
 the desired results mentioned above. 
+
+This is a repository containing an interactive visualizer for the source file analyzer code that we have implemented ([github repository here](https://github.com/kotunde/SourceFileAnalyzer_featureSearch_and_classification)). The visualizer allows you to explore the output of the source file analyzer in an interactive and intuitive way, making it easier to understand and analyze the results.
 
 #### Documentation (HU)
 Documentation [here](https://drive.google.com/file/d/1kWhOHgtBw9a86DTgF4EhhcINgtFxaYog/view?usp=sharing)
